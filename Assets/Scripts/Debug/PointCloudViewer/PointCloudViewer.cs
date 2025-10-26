@@ -105,7 +105,6 @@ public class PointCloudViewer : MonoBehaviour
             pointCloudRenderer.ClearMesh();
         }
     }
-
     #region Public Methods for UI/Input
     public void RebuildPointCloud()
     {
@@ -123,19 +122,53 @@ public class PointCloudViewer : MonoBehaviour
     public void StartVoxelDensityFiltering()
     {
         if (operationHandler == null) InitializeComponentsAndSubscribe();
+
+        if (!UnityEngine.Application.isPlaying && dataManager.SpatialSearch == null)
+        {
+            UnityEngine.Debug.Log("点群データがロードされていません (Editor)。再構築を実行します。");
+            RebuildPointCloud();
+        }
+
         operationHandler.ExecuteVoxelDensityFilter();
     }
 
     public void StartNoiseFiltering()
     {
         if (operationHandler == null) InitializeComponentsAndSubscribe();
+
+        if (!UnityEngine.Application.isPlaying && dataManager.SpatialSearch == null)
+        {
+            UnityEngine.Debug.Log("点群データがロードされていません (Editor)。再構築を実行します。");
+            RebuildPointCloud();
+        }
+
         operationHandler.ExecuteNoiseFilter();
     }
 
     public void StartMorpologyOperation()
     {
         if (operationHandler == null) InitializeComponentsAndSubscribe();
+
+        if (!UnityEngine.Application.isPlaying && dataManager.SpatialSearch == null)
+        {
+            UnityEngine.Debug.Log("点群データがロードされていません (Editor)。再構築を実行します。");
+            RebuildPointCloud();
+        }
+
         operationHandler.ExecuteMorphologyOperation();
+    }
+
+    public void StartDensityComplementation()
+    {
+        if (operationHandler == null) InitializeComponentsAndSubscribe();
+
+        if (!UnityEngine.Application.isPlaying && dataManager.SpatialSearch == null)
+        {
+            UnityEngine.Debug.Log("点群データがロードされていません (Editor)。密度補完の実行前に再構築を実行します。");
+            RebuildPointCloud();
+        }
+
+        operationHandler.ExecuteDensityComplementation();
     }
 
     public void HandleInteraction()
