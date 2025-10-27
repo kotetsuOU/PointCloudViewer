@@ -52,6 +52,9 @@ public class PCV_Settings : MonoBehaviour
     [Tooltip("有効なボクセル内に点をランダムに配置します。")]
     public bool complementationRandomPlacement = false;
 
+    [Tooltip("各処理をコルーチンで実行し、フレームレートの低下を防ぐ")]
+    public bool useCoroutine = false;
+
     [Header("GPU Acceleration")]
     [Tooltip("点群フィルタリングに使用するCompute Shader")]
     public ComputeShader pointCloudFilterShader;
@@ -61,6 +64,8 @@ public class PCV_Settings : MonoBehaviour
     public ComputeShader densityFilterShader;
     [Tooltip("密度補完に使用するCompute Shader")]
     public ComputeShader densityComplementationShader;
+    [Tooltip("ボクセルグリッド構築に使用するCompute Shader")]
+    public ComputeShader voxelGridBuilderShader;
 
     [Tooltip("近傍探索ノイズ除去にGPUを使用する")]
     public bool useGpuNoiseFilter = true;
@@ -91,6 +96,7 @@ public class PCV_Settings : MonoBehaviour
     private ComputeShader lastMorpologyOperationShader;
     private ComputeShader lastDensityFilterShader;
     private ComputeShader lastDensityComplementationShader;
+    private ComputeShader lastVoxelGridBuilderShader;
 
     private bool lastUseGpuNoiseFilter;
     private bool lastUseGpuDensityFilter;
@@ -130,6 +136,7 @@ public class PCV_Settings : MonoBehaviour
         lastMorpologyOperationShader = morpologyOperationShader;
         lastDensityFilterShader = densityFilterShader;
         lastDensityComplementationShader = densityComplementationShader;
+        lastVoxelGridBuilderShader = voxelGridBuilderShader;
 
         lastUseGpuNoiseFilter = useGpuNoiseFilter;
         lastUseGpuDensityFilter = useGpuDensityFilter;
@@ -170,9 +177,11 @@ public class PCV_Settings : MonoBehaviour
 
     public bool HasProcessingSettingsChanged()
     {
-        bool densityShadersChanged = (densityFilterShader != lastDensityFilterShader) ||
+        bool densityShadersChanged = (morpologyOperationShader != lastMorpologyOperationShader) ||
+                                     (densityFilterShader != lastDensityFilterShader) ||
                                      (densityComplementationShader != lastDensityComplementationShader) ||
-                                     (pointCloudFilterShader != lastPointCloudFilterShader);
+                                     (pointCloudFilterShader != lastPointCloudFilterShader) ||
+                                     (voxelGridBuilderShader != lastVoxelGridBuilderShader);
 
         bool processingParamsChanged = voxelSize != lastVoxelSize ||
                                        searchRadius != lastSearchRadius ||
